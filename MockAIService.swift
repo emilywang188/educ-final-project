@@ -15,153 +15,316 @@ final class MockAIService {
     }
 
     private let seeds: [SeedWord] = [
+        // Theater
         SeedWord(
-            interest: "academic",
-            word: "cogent",
-            pronunciation: "KOH-jent",
-            partOfSpeech: "adjective",
-            definition: "clear, logical, and convincing.",
-            tone: "classroom-ready",
-            examples: [
-                "Her cogent summary made the research article much easier to discuss in class.",
-                "The debate team won because their final point was especially cogent.",
-                "A cogent thesis statement kept his essay focused from start to finish."
-            ],
-            tvExample: "In the study lounge, Maya shut the whole argument down with one cogent sentence and everyone just blinked."
-        ),
-        SeedWord(
-            interest: "academic",
-            word: "nuance",
-            pronunciation: "NOO-ahns",
+            interest: "Theater",
+            word: "blocking",
+            pronunciation: "BLOK-ing",
             partOfSpeech: "noun",
-            definition: "a subtle difference or shade of meaning.",
+            definition: "the precise staging of actors' movements in a scene.",
+            tone: "theatrical",
+            examples: [
+                "The director spent hours perfecting the blocking for the opening scene.",
+                "Good blocking makes the stage feel alive even in a small space.",
+                "She memorized her lines and blocking in one weekend."
+            ],
+            tvExample: "When the understudy nailed the blocking on her first try, the whole cast knew they'd found someone special."
+        ),
+        
+        // Screenwriting
+        SeedWord(
+            interest: "Screenwriting",
+            word: "MacGuffin",
+            pronunciation: "muh-GUF-in",
+            partOfSpeech: "noun",
+            definition: "an object or goal that drives the plot but has little intrinsic value.",
+            tone: "cinematic",
+            examples: [
+                "The briefcase was just a MacGuffin—what mattered was the chase itself.",
+                "Hitchcock was famous for using MacGuffins to propel his thrillers.",
+                "A good MacGuffin keeps the story moving without becoming the story."
+            ],
+            tvExample: "Everyone argued about what was in the case, but the screenwriter admitted it was just a MacGuffin to get characters in the same room."
+        ),
+        
+        // Film production
+        SeedWord(
+            interest: "Film production",
+            word: "continuity",
+            pronunciation: "kon-tih-NOO-ih-tee",
+            partOfSpeech: "noun",
+            definition: "the consistency of details across different shots and scenes.",
+            tone: "technical",
+            examples: [
+                "The script supervisor caught a continuity error before they wrapped the scene.",
+                "Maintaining continuity is harder when you shoot scenes out of order.",
+                "Eagle-eyed fans love spotting continuity mistakes in blockbusters."
+            ],
+            tvExample: "The behind-the-scenes footage showed how obsessed they were with continuity—down to the exact position of every coffee cup."
+        ),
+        
+        // Basketball
+        SeedWord(
+            interest: "Basketball",
+            word: "crossover",
+            pronunciation: "KROS-oh-ver",
+            partOfSpeech: "noun",
+            definition: "a dribbling move where the ball is switched from one hand to the other.",
+            tone: "athletic",
+            examples: [
+                "His crossover was so quick it left defenders frozen.",
+                "The ankle-breaking crossover became an instant highlight reel.",
+                "She practiced her crossover dribble for hours every day."
+            ],
+            tvExample: "When the rookie hit that crossover and the defender stumbled, the entire bench erupted."
+        ),
+        
+        // Soccer / football
+        SeedWord(
+            interest: "Soccer / football",
+            word: "clinical",
+            pronunciation: "KLIN-ih-kul",
+            partOfSpeech: "adjective",
+            definition: "precise and efficient, especially in finishing scoring chances.",
+            tone: "tactical",
+            examples: [
+                "The striker was clinical in front of goal, converting every opportunity.",
+                "A clinical performance means no wasted chances.",
+                "The commentator praised the team's clinical finishing in the final third."
+            ],
+            tvExample: "Down to ten players, they stayed clinical—one chance, one goal, game over."
+        ),
+        
+        // Physics
+        SeedWord(
+            interest: "Physics",
+            word: "inertia",
+            pronunciation: "in-UR-shuh",
+            partOfSpeech: "noun",
+            definition: "the tendency of an object to resist changes in its state of motion.",
+            tone: "scientific",
+            examples: [
+                "Newton's first law describes inertia as the resistance to acceleration.",
+                "The experiment demonstrated inertia using a cart on a frictionless track.",
+                "Understanding inertia helps explain why seatbelts save lives."
+            ],
+            tvExample: "The physics teacher used a tablecloth trick to show inertia, and half the class gasped when the dishes stayed put."
+        ),
+        
+        // Computer science
+        SeedWord(
+            interest: "Computer science",
+            word: "recursion",
+            pronunciation: "rih-KUR-zhun",
+            partOfSpeech: "noun",
+            definition: "a process where a function calls itself to solve smaller instances of a problem.",
+            tone: "computational",
+            examples: [
+                "The algorithm used recursion to traverse the entire tree structure.",
+                "Understanding recursion is essential for solving many programming challenges.",
+                "His code broke because the recursion had no base case."
+            ],
+            tvExample: "When the TA explained recursion by saying 'to understand recursion, you must first understand recursion,' everyone groaned but finally got it."
+        ),
+        
+        // AI / machine learning
+        SeedWord(
+            interest: "AI / machine learning",
+            word: "overfitting",
+            pronunciation: "OH-ver-fit-ing",
+            partOfSpeech: "noun",
+            definition: "when a model learns training data too well and fails on new data.",
+            tone: "technical",
+            examples: [
+                "The model showed signs of overfitting with 99% training accuracy but poor validation scores.",
+                "Preventing overfitting requires careful regularization and cross-validation.",
+                "She added dropout layers to reduce overfitting in the neural network."
+            ],
+            tvExample: "The AI demo looked perfect until they tested it on real users—classic overfitting, the engineer sighed."
+        ),
+        
+        // Investing
+        SeedWord(
+            interest: "Investing",
+            word: "diversify",
+            pronunciation: "dih-VUR-sih-fy",
+            partOfSpeech: "verb",
+            definition: "to spread investments across different assets to reduce risk.",
+            tone: "financial",
+            examples: [
+                "Financial advisors always recommend you diversify your portfolio.",
+                "She diversified by investing in both stocks and bonds.",
+                "A well-diversified portfolio weathers market volatility better."
+            ],
+            tvExample: "When the market crashed, the one investor who stayed calm was the one who'd actually diversified."
+        ),
+        
+        // Startups
+        SeedWord(
+            interest: "Startups",
+            word: "pivot",
+            pronunciation: "PIV-ut",
+            partOfSpeech: "verb",
+            definition: "to fundamentally change business strategy or direction.",
+            tone: "entrepreneurial",
+            examples: [
+                "After six months of poor traction, the startup decided to pivot.",
+                "The best founders know when to pivot and when to persevere.",
+                "Their pivot from B2C to B2B saved the company."
+            ],
+            tvExample: "Three weeks before launch, the CEO announced they were pivoting—half the room panicked, half got excited."
+        ),
+        
+        // UX/UI design
+        SeedWord(
+            interest: "UX/UI design",
+            word: "affordance",
+            pronunciation: "uh-FOR-dunss",
+            partOfSpeech: "noun",
+            definition: "a quality of an object that suggests how it can be used.",
+            tone: "design-focused",
+            examples: [
+                "Good buttons have visual affordances that make them obviously clickable.",
+                "The handle's affordance made it clear which way to pull the door.",
+                "Designers use affordances to create intuitive interfaces."
+            ],
+            tvExample: "The app failed because nothing had clear affordances—users just stared at the screen, confused about what to tap."
+        ),
+        
+        // Fashion
+        SeedWord(
+            interest: "Fashion",
+            word: "silhouette",
+            pronunciation: "sil-oo-ET",
+            partOfSpeech: "noun",
+            definition: "the outline or general shape of something, especially clothing.",
+            tone: "stylistic",
+            examples: [
+                "The collection featured bold silhouettes that challenged traditional proportions.",
+                "A strong silhouette makes an outfit recognizable even from a distance.",
+                "The designer is known for architectural silhouettes."
+            ],
+            tvExample: "When the model walked out in that dramatic silhouette, the entire front row leaned forward."
+        ),
+        
+        // Cooking / culinary arts
+        SeedWord(
+            interest: "Cooking / culinary arts",
+            word: "emulsify",
+            pronunciation: "ih-MUL-sih-fy",
+            partOfSpeech: "verb",
+            definition: "to combine two liquids that normally don't mix, like oil and water.",
+            tone: "culinary",
+            examples: [
+                "Whisk vigorously to emulsify the oil and vinegar into a smooth dressing.",
+                "The sauce broke because it didn't emulsify properly.",
+                "Learning to emulsify is fundamental to making mayonnaise."
+            ],
+            tvExample: "The cooking show host made it look easy: 'Just emulsify,' she said, while everyone at home watched their sauce separate."
+        ),
+        
+        // Coffee
+        SeedWord(
+            interest: "Coffee",
+            word: "extraction",
+            pronunciation: "ek-STRAK-shun",
+            partOfSpeech: "noun",
+            definition: "the process of dissolving soluble compounds from coffee grounds into water.",
+            tone: "precise",
+            examples: [
+                "Over-extraction makes coffee taste bitter and harsh.",
+                "Baristas adjust grind size and brew time to perfect extraction.",
+                "The ideal extraction pulls the best flavors without the unpleasant ones."
+            ],
+            tvExample: "The coffee snob tasted it once and said 'under-extracted'—and somehow everyone believed him."
+        ),
+        
+        // Philosophy
+        SeedWord(
+            interest: "Philosophy",
+            word: "empirical",
+            pronunciation: "em-PEER-ih-kul",
+            partOfSpeech: "adjective",
+            definition: "based on observation or experience rather than theory.",
+            tone: "philosophical",
+            examples: [
+                "The scientist demanded empirical evidence before accepting the claim.",
+                "Empirical research relies on data gathered through observation.",
+                "Her argument was strong theoretically but lacked empirical support."
+            ],
+            tvExample: "The philosophy debate got heated when someone demanded empirical proof—and the whole room realized they'd been talking in circles."
+        ),
+        
+        // History
+        SeedWord(
+            interest: "History",
+            word: "anachronism",
+            pronunciation: "uh-NAK-ruh-niz-um",
+            partOfSpeech: "noun",
+            definition: "something placed in the wrong time period.",
+            tone: "historical",
+            examples: [
+                "The movie had a glaring anachronism: wristwatches in ancient Rome.",
+                "Historians love spotting anachronisms in period dramas.",
+                "Using modern slang in a Renaissance novel would be a jarring anachronism."
+            ],
+            tvExample: "The history buffs lost it when they spotted the anachronism—electric lights in a medieval castle scene."
+        ),
+        
+        // Gaming
+        SeedWord(
+            interest: "Gaming",
+            word: "meta",
+            pronunciation: "MET-uh",
+            partOfSpeech: "noun",
+            definition: "the most effective strategies or tactics currently dominating gameplay.",
+            tone: "competitive",
+            examples: [
+                "The current meta favors aggressive early-game strategies.",
+                "Pro players study the meta to stay competitive.",
+                "After the patch, the entire meta shifted overnight."
+            ],
+            tvExample: "When the new character dropped, everyone scrambled to figure out how it changed the meta."
+        ),
+        
+        // Travel
+        SeedWord(
+            interest: "Travel",
+            word: "wanderlust",
+            pronunciation: "WON-der-lust",
+            partOfSpeech: "noun",
+            definition: "a strong desire to travel and explore the world.",
+            tone: "adventurous",
+            examples: [
+                "Her wanderlust led her to visit 30 countries before turning 25.",
+                "Social media feeds full of exotic locations fuel wanderlust.",
+                "The travel blog captures the spirit of wanderlust perfectly."
+            ],
+            tvExample: "The montage of empty roads and distant mountains hit different—pure wanderlust in 90 seconds."
+        ),
+        
+        // TV/Dialogue
+        SeedWord(
+            interest: "Pop culture analysis",
+            word: "trope",
+            pronunciation: "TROHP",
+            partOfSpeech: "noun",
+            definition: "a common or overused theme, device, or cliché in storytelling.",
             tone: "analytical",
             examples: [
-                "The professor asked the class to notice the nuance in the author’s tone.",
-                "Once you hear the nuance in the data, the conclusion feels more balanced.",
-                "Her presentation stood out because she explained the nuance behind each result."
+                "The 'chosen one' is a well-worn trope in fantasy stories.",
+                "Good writers subvert familiar tropes instead of repeating them.",
+                "The show avoided every tired romantic comedy trope."
             ],
-            tvExample: "The group chat exploded, but Jordan caught the nuance in the text and realized nobody was actually mad."
-        ),
-        SeedWord(
-            interest: "literary",
-            word: "luminous",
-            pronunciation: "LOO-muh-nus",
-            partOfSpeech: "adjective",
-            definition: "glowing with light or marked by vivid clarity and beauty.",
-            tone: "imagistic",
-            examples: [
-                "The writer described the city skyline as luminous after the rain.",
-                "Her journal entry turned an ordinary afternoon into a luminous memory.",
-                "The poem feels luminous because every image seems to shimmer."
-            ],
-            tvExample: "The camera cut to the rooftop and the whole scene went luminous, like the finale knew exactly what it was doing."
-        ),
-        SeedWord(
-            interest: "literary",
-            word: "wistful",
-            pronunciation: "WIST-ful",
-            partOfSpeech: "adjective",
-            definition: "gently sad in a thoughtful or longing way.",
-            tone: "reflective",
-            examples: [
-                "He sounded wistful when he talked about freshman year.",
-                "The film ends on a wistful note instead of a dramatic one.",
-                "Her caption was funny on the surface but quietly wistful underneath."
-            ],
-            tvExample: "At the bus stop, the soundtrack turned soft and the whole moment felt wistful without saying it out loud."
-        ),
-        SeedWord(
-            interest: "expressive",
-            word: "buoyant",
-            pronunciation: "BOY-unt",
-            partOfSpeech: "adjective",
-            definition: "cheerful, lighthearted, and able to stay upbeat.",
-            tone: "energizing",
-            examples: [
-                "Even after two exams, she stayed buoyant and kept the group motivated.",
-                "His buoyant greeting changed the mood of the room instantly.",
-                "The club’s social feed has a buoyant style that makes people want to join."
-            ],
-            tvExample: "You could tell the main character was buoyant because she walked into chaos like it was a victory lap."
-        ),
-        SeedWord(
-            interest: "expressive",
-            word: "vivid",
-            pronunciation: "VIV-id",
-            partOfSpeech: "adjective",
-            definition: "producing strong, clear, and memorable images or feelings.",
-            tone: "creative",
-            examples: [
-                "His vivid description made the internship sound like a whole mini-series.",
-                "A vivid detail can make even a short story feel complete.",
-                "She remembers the concert in vivid flashes of color and sound."
-            ],
-            tvExample: "The flashback was so vivid that everyone watching forgot it wasn’t happening in real time."
-        ),
-        SeedWord(
-            interest: "tv/dialogue",
-            word: "deadpan",
-            pronunciation: "DED-pan",
-            partOfSpeech: "adjective",
-            definition: "showing humor or emotion with a deliberately blank expression or tone.",
-            tone: "dialogue-heavy",
-            examples: [
-                "His deadpan reply made the whole table laugh harder.",
-                "A deadpan delivery can make a simple line unforgettable.",
-                "She kept reading the chaos in a deadpan voice like a seasoned host."
-            ],
-            tvExample: "When the roommate said, 'Great, another crisis,' in a deadpan voice, the laugh track practically wrote itself."
-        ),
-        SeedWord(
-            interest: "tv/dialogue",
-            word: "banter",
-            pronunciation: "BAN-ter",
-            partOfSpeech: "noun",
-            definition: "playful and quick conversation that feels lively and teasing.",
-            tone: "conversational",
-            examples: [
-                "Their banter made the presentation feel more natural than scripted.",
-                "Good banter can turn a group project from awkward to fun.",
-                "The podcast works because the hosts have relaxed banter."
-            ],
-            tvExample: "The detective and the barista traded banter so sharp it felt like the episode had switched genres for a minute."
-        ),
-        SeedWord(
-            interest: "professional",
-            word: "streamline",
-            pronunciation: "STREEM-line",
-            partOfSpeech: "verb",
-            definition: "to make a process simpler, faster, and more efficient.",
-            tone: "career-focused",
-            examples: [
-                "The team used a shared document to streamline communication before the event.",
-                "A clean checklist can streamline even a hectic study schedule.",
-                "She streamlined the meeting by sending updates ahead of time."
-            ],
-            tvExample: "Even the overworked startup manager had to admit the intern’s idea would streamline the whole mess."
-        ),
-        SeedWord(
-            interest: "professional",
-            word: "bandwidth",
-            pronunciation: "BAND-width",
-            partOfSpeech: "noun",
-            definition: "the amount of time, energy, or attention available for something.",
-            tone: "practical",
-            examples: [
-                "I want to help, but I do not have the bandwidth this week.",
-                "She protected her bandwidth by blocking off study hours on her calendar.",
-                "Knowing your bandwidth helps you commit to projects more honestly."
-            ],
-            tvExample: "By the third surprise deadline, Leo stared into the camera and said he had zero bandwidth left for nonsense."
+            tvExample: "When the mentor character showed up, everyone knew the 'wise old guide' trope was coming—but then the show flipped it entirely."
         )
     ]
 
     private init() {}
 
     func generateDailyWord(preferences: UserPreferences, existingWords: [VocabularyWord], date: Date) -> VocabularyWord {
-        let interests = preferences.interests.isEmpty ? UserPreferences.availableInterests : preferences.interests
-        let candidates = seeds.filter { interests.contains($0.interest) }
+        let seedInterests = UserPreferences.seedInterestKeys(from: preferences.interests)
+        let candidates = seeds.filter { seedInterests.contains($0.interest) }
         let pool = candidates.isEmpty ? seeds : candidates
 
         let dayIndex = Calendar.current.ordinality(of: .day, in: .year, for: date) ?? 1
@@ -172,8 +335,8 @@ final class MockAIService {
     }
 
     func randomWord(preferences: UserPreferences, existingWords: [VocabularyWord], excluding word: VocabularyWord?) -> VocabularyWord {
-        let interests = preferences.interests.isEmpty ? UserPreferences.availableInterests : preferences.interests
-        let candidates = seeds.filter { interests.contains($0.interest) }
+        let seedInterests = UserPreferences.seedInterestKeys(from: preferences.interests)
+        let candidates = seeds.filter { seedInterests.contains($0.interest) }
         var pool = candidates.isEmpty ? seeds : candidates
         if let word {
             pool.removeAll { $0.word == word.word }
@@ -183,8 +346,8 @@ final class MockAIService {
     }
 
     func quizQuestion(for word: VocabularyWord, preferences: UserPreferences) -> QuizQuestion {
-        let interests = preferences.interests.isEmpty ? UserPreferences.availableInterests : preferences.interests
-        let candidates = seeds.filter { interests.contains($0.interest) }
+        let seedInterests = UserPreferences.seedInterestKeys(from: preferences.interests)
+        let candidates = seeds.filter { seedInterests.contains($0.interest) }
         let pool = candidates.isEmpty ? seeds : candidates
         let distractors = pool.filter { $0.word != word.word }.shuffled().prefix(2).map { $0.word }
         var choices = ([word.word] + distractors)

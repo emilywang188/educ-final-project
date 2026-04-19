@@ -209,12 +209,18 @@ struct TodayView: View {
                                 .fill(Theme.primaryGradient)
                                 .frame(width: 56, height: 56)
                                 .shadow(color: Theme.primary.opacity(0.25), radius: 12, x: 0, y: 8)
-                            Image(systemName: store.isPodcastPlaying ? "pause.fill" : "play.fill")
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundStyle(.white)
+                            if store.isPodcastGenerating {
+                                ProgressView()
+                                    .tint(.white)
+                            } else {
+                                Image(systemName: store.isPodcastPlaying ? "pause.fill" : "play.fill")
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
                         }
                     }
                     .buttonStyle(.plain)
+                    .disabled(store.isPodcastGenerating)
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text("The Beauty of Transience")
@@ -255,6 +261,12 @@ struct TodayView: View {
                         .foregroundStyle(Theme.onSurfaceVariant)
                         .italic()
                         .lineLimit(3)
+
+                    if let message = store.podcastErrorMessage {
+                        Text(message)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Theme.error)
+                    }
                 }
                 .padding(12)
                 .background(Theme.surfaceContainerLowest)

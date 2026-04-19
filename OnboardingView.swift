@@ -3,17 +3,16 @@ import SwiftUI
 struct OnboardingView: View {
     @EnvironmentObject private var store: WordCastStore
     @State private var selectedInterests: Set<String> = []
-    @State private var lessonLength: Int = 5
 
-    private let allInterests = UserPreferences.availableInterests
-    private let lessonOptions = [2, 5, 10]
-
-    private let interestIcons: [String: String] = [
-        "academic": "graduationcap.fill",
-        "expressive": "paintpalette.fill",
-        "literary": "book.fill",
-        "tv/dialogue": "text.bubble.fill",
-        "professional": "briefcase.fill"
+    private let sectionIcons: [String: String] = [
+        "Performing Arts & Entertainment": "theatermasks.fill",
+        "Sports & Athletics": "sportscourt.fill",
+        "Science & Technical Domains": "atom",
+        "Business, Finance & Economics": "briefcase.fill",
+        "Creative & Design Fields": "paintpalette.fill",
+        "Lifestyle & Hobbies": "leaf.fill",
+        "Culture, Society & Identity": "book.fill",
+        "Niche & Subculture Interests": "sparkles"
     ]
 
     var body: some View {
@@ -22,7 +21,6 @@ struct OnboardingView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     hero
                     interestSection
-                    commitmentSection
                     Spacer(minLength: 120)
                 }
                 .padding(.horizontal, 24)
@@ -60,8 +58,7 @@ struct OnboardingView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            selectedInterests = Set(store.preferences.interests)
-            lessonLength = store.preferences.lessonLength
+            selectedInterests = Set(store.preferences.interests.filter { UserPreferences.availableInterests.contains($0) })
         }
     }
 
@@ -89,55 +86,35 @@ struct OnboardingView: View {
                     .tracking(2)
             }
 
-            FlexibleChipGrid(items: allInterests) { interest in
-                Button {
-                    toggle(interest)
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: interestIcons[interest] ?? "sparkles")
-                            .font(.system(size: 14, weight: .semibold))
-                        Text(label(for: interest))
-                            .font(.system(size: 14, weight: .semibold))
-                    }
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 16)
-                    .foregroundStyle(selectedInterests.contains(interest) ? Theme.onPrimaryFixed : Theme.onSurfaceVariant)
-                    .background(selectedInterests.contains(interest) ? Theme.primaryFixed : Theme.surfaceContainerHigh)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .shadow(color: Color.black.opacity(selectedInterests.contains(interest) ? 0.06 : 0), radius: 10, x: 0, y: 6)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-
-    private var commitmentSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Daily Commitment")
-                .font(.system(size: 20, weight: .bold))
-            Text("Consistent rituals lead to mastery.")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(Theme.onSurfaceVariant)
-
-            HStack(spacing: 6) {
-                ForEach(lessonOptions, id: \.self) { option in
-                    Button {
-                        lessonLength = option
-                    } label: {
-                        Text("\(option) min")
+            VStack(alignment: .leading, spacing: 16) {
+                ForEach(UserPreferences.interestSections) { section in
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(section.title)
                             .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(lessonLength == option ? Theme.primary : Theme.onSurfaceVariant)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(lessonLength == option ? Theme.surfaceContainerLowest : Theme.surfaceContainerLow)
-                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            .foregroundStyle(Theme.onSurfaceVariant)
+
+                        FlexibleChipGrid(items: section.items) { interest in
+                            Button {
+                                toggle(interest)
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: icon(for: interest, sectionTitle: section.title))
+                                        .font(.system(size: 14, weight: .semibold))
+                                    Text(interest)
+                                        .font(.system(size: 14, weight: .semibold))
+                                }
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 16)
+                                .foregroundStyle(selectedInterests.contains(interest) ? Theme.onPrimaryFixed : Theme.onSurfaceVariant)
+                                .background(selectedInterests.contains(interest) ? Theme.primaryFixed : Theme.surfaceContainerHigh)
+                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                .shadow(color: Color.black.opacity(selectedInterests.contains(interest) ? 0.06 : 0), radius: 10, x: 0, y: 6)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
             }
-            .padding(6)
-            .background(Theme.surfaceContainerLow)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
     }
 
@@ -155,8 +132,8 @@ struct OnboardingView: View {
         VStack(spacing: 10) {
             PrimaryGradientButton(title: "Start Learning", systemImage: "arrow.right") {
                 let preferences = UserPreferences(
-                    interests: Array(selectedInterests).sorted(),
-                    lessonLength: lessonLength
+                    interests: UserPreferences.orderedInterests(from: selectedInterests),
+                    lessonLength: store.preferences.lessonLength
                 )
                 store.completeOnboarding(with: preferences)
             }
@@ -183,13 +160,11 @@ struct OnboardingView: View {
         }
     }
 
-    private func label(for interest: String) -> String {
-        switch interest {
-        case "tv/dialogue":
-            return "TV/Dialogue"
-        default:
-            return interest.capitalized
+    private func icon(for interest: String, sectionTitle: String) -> String {
+        if interest == "Esports" || interest == "Gaming" {
+            return "gamecontroller.fill"
         }
+        return sectionIcons[sectionTitle] ?? "sparkles"
     }
 }
 

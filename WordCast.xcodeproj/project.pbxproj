@@ -22,7 +22,6 @@
 		A1D028F32F90B7BF00CC24F5 /* GeminiPodcastService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D028F22F90B7BF00CC24F5 /* GeminiPodcastService.swift */; };
 		A1D028F52F90B7BF00CC24F5 /* PodcastAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D028F42F90B7BF00CC24F5 /* PodcastAudioPlayer.swift */; };
 		A1D028F92F94909000CC24F5 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D028F82F94909000CC24F5 /* Config.swift */; };
-		A1D028FB2F949F2600CC24F5 /* Config-template.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D028FA2F949F2600CC24F5 /* Config-template.swift */; };
 		A1D028FD2F949F3F00CC24F5 /* Info-template.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1D028FC2F949F3F00CC24F5 /* Info-template.plist */; };
 /* End PBXBuildFile section */
 
@@ -33,7 +32,6 @@
 		A1D028F42F90B7BF00CC24F5 /* PodcastAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastAudioPlayer.swift; sourceTree = "<group>"; };
 		A1D028F62F92DBEA00CC24F5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1D028F82F94909000CC24F5 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
-		A1D028FA2F949F2600CC24F5 /* Config-template.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Config-template.swift"; sourceTree = "<group>"; };
 		A1D028FC2F949F3F00CC24F5 /* Info-template.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-template.plist"; sourceTree = "<group>"; };
 		A20000000000000000000001 /* WordCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20000010000000000000001 /* WordCastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordCastApp.swift; sourceTree = "<group>"; };
@@ -86,7 +84,6 @@
 				A1D028F42F90B7BF00CC24F5 /* PodcastAudioPlayer.swift */,
 				A1D028F62F92DBEA00CC24F5 /* Info.plist */,
 				A1D028F82F94909000CC24F5 /* Config.swift */,
-				A1D028FA2F949F2600CC24F5 /* Config-template.swift */,
 				A1D028FC2F949F3F00CC24F5 /* Info-template.plist */,
 			);
 			name = WordCast;
@@ -184,7 +181,6 @@
 				A1D028F32F90B7BF00CC24F5 /* GeminiPodcastService.swift in Sources */,
 				A10000010000000000000009 /* MockAIService.swift in Sources */,
 				A1000001000000000000000A /* ReviewScheduler.swift in Sources */,
-				A1D028FB2F949F2600CC24F5 /* Config-template.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

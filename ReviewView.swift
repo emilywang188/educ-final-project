@@ -56,31 +56,49 @@ struct ReviewView: View {
     }
 
     private var progressSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let dueCount = dueItems.count
+        let totalReviews = store.reviewItems.count
+        let reviewedCount = totalReviews - dueCount
+        let progress = totalReviews > 0 ? Double(reviewedCount) / Double(totalReviews) : 0
+        
+        return VStack(alignment: .leading, spacing: 10) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Daily Goal")
+                    Text("REVIEW PROGRESS")
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(Theme.outline)
                         .tracking(1)
-                    Text("14 Words Left")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(Theme.primary)
+                    if dueCount > 0 {
+                        Text("\(dueCount) Word\(dueCount == 1 ? "" : "s") Due")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundStyle(Theme.primary)
+                    } else {
+                        Text("All Caught Up!")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundStyle(Theme.secondary)
+                    }
                 }
                 Spacer()
-                Text("60% Complete")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(Theme.outline)
+                if totalReviews > 0 {
+                    Text("\(Int(progress * 100))% Complete")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(Theme.outline)
+                }
             }
 
-            Capsule()
-                .fill(Theme.surfaceContainerHighest)
-                .frame(height: 10)
-                .overlay(alignment: .leading) {
+            if totalReviews > 0 {
+                GeometryReader { geometry in
                     Capsule()
-                        .fill(Theme.primaryGradient)
-                        .frame(width: 180, height: 10)
+                        .fill(Theme.surfaceContainerHighest)
+                        .frame(height: 10)
+                        .overlay(alignment: .leading) {
+                            Capsule()
+                                .fill(Theme.primaryGradient)
+                                .frame(width: geometry.size.width * CGFloat(progress), height: 10)
+                        }
                 }
+                .frame(height: 10)
+            }
         }
         .padding(20)
         .background(Theme.surfaceContainerLow)
@@ -89,16 +107,12 @@ struct ReviewView: View {
     }
 
     private func flashcardSection(item: ReviewItem) -> some View {
-        VStack(spacing: 16) {
+        let exampleSentence = item.word.examples.first ?? ""
+        let blankSentence = exampleSentence.replacingOccurrences(of: item.word.word, with: "_____", options: .caseInsensitive)
+        
+        return VStack(spacing: 16) {
             HStack {
                 HStack(spacing: 6) {
-                    Text("Latin Root")
-                        .font(.system(size: 10, weight: .bold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Theme.primaryFixed)
-                        .foregroundStyle(Theme.onPrimaryFixed)
-                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                     Text(item.word.partOfSpeech.capitalized)
                         .font(.system(size: 10, weight: .bold))
                         .padding(.horizontal, 8)
@@ -106,42 +120,69 @@ struct ReviewView: View {
                         .background(Theme.secondaryContainer)
                         .foregroundStyle(Theme.secondary)
                         .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    
+                    Text(difficultyBadge(item.difficulty))
+                        .font(.system(size: 10, weight: .bold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(difficultyColor(item.difficulty).opacity(0.2))
+                        .foregroundStyle(difficultyColor(item.difficulty))
+                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 }
                 Spacer()
-                Image(systemName: "speaker.wave.2")
-                    .foregroundStyle(Theme.outline)
             }
 
             VStack(alignment: .leading, spacing: 12) {
-                Text("Definition")
+                Text("DEFINITION")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(Theme.primary)
                     .tracking(1.5)
                 Text(item.word.definition)
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundStyle(Theme.onSurface)
 
                 if revealed {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(item.word.word)
-                            .font(.system(size: 28, weight: .bold))
+                        Text(item.word.word.capitalized)
+                            .font(.system(size: 32, weight: .black))
+                            .foregroundStyle(Theme.primary)
                         Text(item.word.pronunciation)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(Theme.onSurfaceVariant)
                     }
                     .padding(.top, 12)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("EXAMPLE")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(Theme.outline)
+                            .tracking(1.5)
+                        Text("\"\(exampleSentence)\"")
+                            .font(.system(size: 15, weight: .regular))
+                            .foregroundStyle(Theme.onSurfaceVariant)
+                            .italic()
+                    }
+                    .padding(.top, 12)
                 } else {
+                    if !blankSentence.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("EXAMPLE")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(Theme.outline)
+                                .tracking(1.5)
+                            Text("\"\(blankSentence)\"")
+                                .font(.system(size: 15, weight: .regular))
+                                .foregroundStyle(Theme.onSurfaceVariant)
+                                .italic()
+                        }
+                        .padding(.top, 8)
+                    }
+                    
                     Text("Tap reveal to show the word.")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(Theme.onSurfaceVariant)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Theme.outline)
                         .padding(.top, 8)
                 }
-
-                Text("\"The sunset provided an ______ beauty that disappeared within minutes.\"")
-                    .font(.system(size: 15, weight: .regular))
-                    .foregroundStyle(Theme.onSurfaceVariant)
-                    .italic()
-                    .padding(.top, 12)
             }
 
             Button {
@@ -149,13 +190,17 @@ struct ReviewView: View {
                     revealed.toggle()
                 }
             } label: {
-                Text(revealed ? "Hide Answer" : "Reveal Answer")
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Theme.primaryGradient)
-                    .clipShape(Capsule())
+                HStack(spacing: 8) {
+                    Image(systemName: revealed ? "eye.slash.fill" : "eye.fill")
+                        .font(.system(size: 14, weight: .bold))
+                    Text(revealed ? "Hide Answer" : "Reveal Answer")
+                        .font(.system(size: 15, weight: .bold))
+                }
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Theme.primaryGradient)
+                .clipShape(Capsule())
             }
             .buttonStyle(.plain)
         }
@@ -164,17 +209,38 @@ struct ReviewView: View {
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 12)
     }
+    
+    private func difficultyBadge(_ difficulty: ReviewDifficulty) -> String {
+        switch difficulty {
+        case .easy: return "Easy"
+        case .medium: return "Medium"
+        case .hard: return "Hard"
+        }
+    }
+    
+    private func difficultyColor(_ difficulty: ReviewDifficulty) -> Color {
+        switch difficulty {
+        case .easy: return Theme.secondary
+        case .medium: return Theme.primary
+        case .hard: return Theme.error
+        }
+    }
 
     private func ratingSection(item: ReviewItem) -> some View {
-        VStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("How well did you remember this word?")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Theme.onSurface)
+                .padding(.horizontal, 4)
+            
             HStack(spacing: 12) {
-                RatingTile(title: "Hard", subtitle: "Today", detail: "15 min", color: Theme.error, tint: Theme.errorContainer) {
+                RatingTile(title: "Hard", subtitle: "4 Hours", detail: "Review soon", color: Theme.error, tint: Theme.errorContainer) {
                     submit(.hard, item: item)
                 }
-                RatingTile(title: "Medium", subtitle: "Tomorrow", detail: "24 hours", color: Theme.primary, tint: Theme.primaryFixed.opacity(0.4)) {
+                RatingTile(title: "Medium", subtitle: "1 Day", detail: "Tomorrow", color: Theme.primary, tint: Theme.primaryFixed.opacity(0.4)) {
                     submit(.medium, item: item)
                 }
-                RatingTile(title: "Easy", subtitle: "3 Days", detail: "72 hours", color: Theme.secondary, tint: Theme.secondaryContainer.opacity(0.5)) {
+                RatingTile(title: "Easy", subtitle: "3 Days", detail: "Later", color: Theme.secondary, tint: Theme.secondaryContainer.opacity(0.5)) {
                     submit(.easy, item: item)
                 }
             }

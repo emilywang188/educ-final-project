@@ -353,14 +353,44 @@ struct TodayView: View {
 
     private var completionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            PrimaryGradientButton(title: "Mark as Learned", systemImage: "checkmark.circle.fill") {
-                store.markCurrentLessonLearned()
-            }
+            if store.isCurrentLessonLearned {
+                // Success state - already learned
+                HStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundStyle(Theme.secondary)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Word Learned!")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(Theme.onSurface)
+                        Text("Added to your library for review")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(Theme.onSurfaceVariant)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(16)
+                .background(Theme.secondaryContainer.opacity(0.3))
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Theme.secondary.opacity(0.3), lineWidth: 2)
+                )
+            } else {
+                // Default state - not yet learned
+                PrimaryGradientButton(title: "Mark as Learned", systemImage: "checkmark.circle.fill") {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        store.markCurrentLessonLearned()
+                    }
+                }
 
-            Text("Learning this word will add it to your Library for future review.")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(Theme.outline)
-                .frame(maxWidth: .infinity, alignment: .center)
+                Text("Learning this word will add it to your Library for future review.")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Theme.outline)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
     }
 

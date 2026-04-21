@@ -313,11 +313,6 @@ final class WordCastStore: ObservableObject {
         stopPlaybackTimer()
         persist(lesson, key: Keys.currentLesson)
         defaults.set(Date(), forKey: Keys.currentLessonDate)
-
-        if !library.contains(lesson) {
-            library.insert(lesson, at: 0)
-            persist(library, key: Keys.library)
-        }
     }
 
     func randomizeCurrentLesson() {
@@ -337,14 +332,6 @@ final class WordCastStore: ObservableObject {
         stopPlaybackTimer()
         persist(lesson, key: Keys.currentLesson)
         defaults.set(Date(), forKey: Keys.currentLessonDate)
-
-        if let previousLesson {
-            library.removeAll { $0.id == previousLesson.id }
-        }
-        if !library.contains(lesson) {
-            library.insert(lesson, at: 0)
-        }
-        persist(library, key: Keys.library)
     }
 
     func togglePodcastPlayback() {
@@ -449,6 +436,13 @@ final class WordCastStore: ObservableObject {
         guard let currentLesson else { return }
         learnedWordIDs.insert(currentLesson.id)
         persist(Array(learnedWordIDs), key: Keys.learnedWordIDs)
+        
+        // Add to library only when marked as learned
+        if !library.contains(currentLesson) {
+            library.insert(currentLesson, at: 0)
+            persist(library, key: Keys.library)
+        }
+        
         scheduleReview(for: currentLesson, difficulty: .medium)
     }
 

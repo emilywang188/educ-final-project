@@ -348,24 +348,43 @@ final class MockAIService {
     }
 
     func quizQuestion(for word: VocabularyWord, preferences: UserPreferences) -> QuizQuestion {
-        // Filter seeds by matching user's actual selected interests
-        let selectedInterests = Set(preferences.interests)
-        let candidates = seeds.filter { selectedInterests.contains($0.interest) }
-        let pool = candidates.isEmpty ? seeds : candidates
+        // Use all available seeds for maximum variety
+        let allSeeds = seeds.filter { $0.word != word.word }.shuffled()
         
         // Get the correct sentence from the target word's examples
         let correctSentence = word.examples.randomElement() ?? word.examples[0]
         
-        // Get 2 distractor seeds to create incorrect example sentences
-        let distractorSeeds = pool.filter { $0.word != word.word }.shuffled().prefix(2)
-        
-        // Create distractor sentences: take sentences from other words and replace their word with the target word
+        // Create distractor sentences by trying to swap words from other examples
         var sentenceChoices: [String] = [correctSentence]
-        for seed in distractorSeeds {
-            // Take an example from the distractor and swap its word with the target word
-            let distractorExample = seed.examples.randomElement() ?? seed.examples[0]
-            let incorrectSentence = distractorExample.replacingOccurrences(of: seed.word, with: word.word, options: .caseInsensitive)
-            sentenceChoices.append(incorrectSentence)
+        
+        for seed in allSeeds {
+            if sentenceChoices.count >= 3 { break }
+            
+            // Try each example from this seed
+            for distractorExample in seed.examples {
+                if sentenceChoices.count >= 3 { break }
+                
+                // Replace the seed word with our target word (case insensitive)
+                var incorrectSentence = distractorExample
+                
+                // Try to find and replace the word in various forms
+                let pattern = "\\b\(NSRegularExpression.escapedPattern(for: seed.word))\\b"
+                if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                    let range = NSRange(distractorExample.startIndex..., in: distractorExample)
+                    incorrectSentence = regex.stringByReplacingMatches(
+                        in: distractorExample,
+                        options: [],
+                        range: range,
+                        withTemplate: word.word
+                    )
+                }
+                
+                // Only add if replacement worked and it's unique
+                if incorrectSentence != distractorExample && 
+                   !sentenceChoices.contains(incorrectSentence) {
+                    sentenceChoices.append(incorrectSentence)
+                }
+            }
         }
         
         sentenceChoices.shuffle()

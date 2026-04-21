@@ -349,13 +349,28 @@ final class MockAIService {
         let seedInterests = UserPreferences.seedInterestKeys(from: preferences.interests)
         let candidates = seeds.filter { seedInterests.contains($0.interest) }
         let pool = candidates.isEmpty ? seeds : candidates
-        let distractors = pool.filter { $0.word != word.word }.shuffled().prefix(2).map { $0.word }
-        var choices = ([word.word] + distractors)
-        choices.shuffle()
-        let correctIndex = choices.firstIndex(of: word.word) ?? 0
+        
+        // Get the correct sentence from the target word's examples
+        let correctSentence = word.examples.randomElement() ?? word.examples[0]
+        
+        // Get 2 distractor seeds to create incorrect example sentences
+        let distractorSeeds = pool.filter { $0.word != word.word }.shuffled().prefix(2)
+        
+        // Create distractor sentences: take sentences from other words and replace their word with the target word
+        var sentenceChoices: [String] = [correctSentence]
+        for seed in distractorSeeds {
+            // Take an example from the distractor and swap its word with the target word
+            let distractorExample = seed.examples.randomElement() ?? seed.examples[0]
+            let incorrectSentence = distractorExample.replacingOccurrences(of: seed.word, with: word.word, options: .caseInsensitive)
+            sentenceChoices.append(incorrectSentence)
+        }
+        
+        sentenceChoices.shuffle()
+        let correctIndex = sentenceChoices.firstIndex(of: correctSentence) ?? 0
+        
         return QuizQuestion(
-            prompt: "Which word matches this definition?\n\"\(word.definition)\"",
-            choices: choices,
+            prompt: "Which sentence uses \"\(word.word)\" correctly?",
+            choices: sentenceChoices,
             correctIndex: correctIndex
         )
     }
@@ -371,11 +386,21 @@ final class MockAIService {
 
     private func buildWord(from seed: SeedWord, preferences: UserPreferences) -> VocabularyWord {
         let transcript = """
-        Welcome to WordCast. Today’s word is \(seed.word), pronounced \(seed.pronunciation). It is a \(seed.partOfSpeech) that means \(seed.definition)
+        Welcome to WordCast. I'm excited to dive into today's word with you. Let's explore \(seed.word), pronounced \(seed.pronunciation). It's a \(seed.partOfSpeech) that means \(seed.definition)
 
-        We picked this word because your interests point toward \(seed.interest) language, and this one is especially \(seed.tone). In a short \(preferences.lessonLength)-minute session, the goal is not just to memorize the definition, but to notice where the word naturally fits.
+        Now, you might be wondering why we picked this particular word for you today. Well, your interests point toward \(seed.interest), and this word is especially \(seed.tone) in that domain. It's one of those terms that can really elevate how you communicate in this space.
 
-        Try hearing it in motion: \(seed.examples[0]) Then stretch it into your own life. You might use it in class, in conversation, or when describing a scene that needs more precision. Before you finish, say the word once out loud and connect it to one moment from your day.
+        Let me paint a picture of how this word works in real contexts. \(seed.examples[0]) Notice how naturally it fits there? Here's another angle: \(seed.examples[1]) And one more to really cement it: \(seed.examples[2])
+
+        But here's where it gets interesting. \(seed.tvExample) That example shows you the word in action, capturing not just what it means, but the feeling and context around it.
+
+        Now, the key to making this word stick isn't just about memorizing the definition. It's about finding those moments in your own life where this word belongs. Think about your conversations, your work, your studies. Where could \(seed.word) add clarity or precision? Maybe you're describing a situation to a friend, writing an essay, or just trying to articulate a thought more precisely.
+
+        Here's a challenge for you: before the day ends, try to use \(seed.word) in a sentence. It doesn't have to be out loud—you can write it down, text it to someone, or just practice it in your head. The act of creating your own example will make this word truly yours.
+
+        To wrap up, let's review quickly. \(seed.word), \(seed.pronunciation), means \(seed.definition). Remember those examples we talked about, and most importantly, connect this word to something real in your world. That's how vocabulary becomes part of who you are, not just what you know.
+
+        Thanks for learning with me today. See you next time on WordCast.
         """
 
         return VocabularyWord(

@@ -40,7 +40,7 @@ struct GeminiPodcastService {
         let endpoint = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/\(modelName):generateContent")!
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
-        request.timeoutInterval = 60 // 60 seconds timeout for audio generation
+        request.timeoutInterval = 180 // 3 minutes timeout for audio generation (increased from 60s)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(apiKey, forHTTPHeaderField: "x-goog-api-key")
 

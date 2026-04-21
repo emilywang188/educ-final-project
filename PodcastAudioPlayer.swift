@@ -8,6 +8,14 @@ final class PodcastAudioPlayer: NSObject, AVAudioPlayerDelegate {
     var isPlaying: Bool {
         player?.isPlaying ?? false
     }
+    
+    var currentTime: TimeInterval {
+        player?.currentTime ?? 0
+    }
+    
+    var duration: TimeInterval {
+        player?.duration ?? 0
+    }
 
     func play(url: URL, onFinished: @escaping () -> Void) throws {
         self.onFinished = onFinished
@@ -16,6 +24,14 @@ final class PodcastAudioPlayer: NSObject, AVAudioPlayerDelegate {
         player.delegate = self
         player.prepareToPlay()
         player.play()
+    }
+    
+    func pause() {
+        player?.pause()
+    }
+    
+    func resume() {
+        player?.play()
     }
 
     func stop() {

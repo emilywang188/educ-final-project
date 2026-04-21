@@ -16,6 +16,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     headerSection
                     interestsCard
+                    debugSection
                     Spacer(minLength: 120)
                 }
                 .padding(.horizontal, 20)
@@ -289,6 +290,38 @@ struct SettingsView: View {
                 lessonLength: store.preferences.lessonLength
             )
         )
+    }
+    
+    private var debugSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Debug")
+                .font(.system(size: 20, weight: .bold))
+            
+            Button {
+                store.clearAllData()
+            } label: {
+                HStack {
+                    Image(systemName: "trash.fill")
+                        .font(.system(size: 14, weight: .semibold))
+                    Text("Clear All Data & Regenerate")
+                        .font(.system(size: 15, weight: .semibold))
+                    Spacer()
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(Color.red)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            
+            Text("This will clear all saved words, reviews, and favorites, then regenerate today's word with the latest transcript format.")
+                .font(.system(size: 12, weight: .regular))
+                .foregroundStyle(Theme.onSurfaceVariant)
+        }
+        .padding(20)
+        .background(Theme.surfaceContainerLowest)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 }
 

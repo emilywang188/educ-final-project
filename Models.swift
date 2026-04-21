@@ -243,6 +243,8 @@ final class WordCastStore: ObservableObject {
     @Published var isPodcastPlaying = false
     @Published var isPodcastGenerating = false
     @Published var podcastErrorMessage: String?
+    @Published var podcastCurrentTime: TimeInterval = 0
+    @Published var podcastDuration: TimeInterval = 0
 
     private let defaults: UserDefaults
     private let encoder = JSONEncoder()
@@ -250,6 +252,7 @@ final class WordCastStore: ObservableObject {
     private let podcastService = GeminiPodcastService()
     private let podcastPlayer = PodcastAudioPlayer()
     private var cachedPodcastURLByWordID: [UUID: URL] = [:]
+    private var playbackTimer: Timer?
 
     private enum Keys {
         static let preferences = "wordcast.preferences"
@@ -305,6 +308,9 @@ final class WordCastStore: ObservableObject {
         isPodcastPlaying = false
         isPodcastGenerating = false
         podcastErrorMessage = nil
+        podcastCurrentTime = 0
+        podcastDuration = 0
+        stopPlaybackTimer()
         persist(lesson, key: Keys.currentLesson)
         defaults.set(Date(), forKey: Keys.currentLessonDate)
 
@@ -326,6 +332,9 @@ final class WordCastStore: ObservableObject {
         isPodcastPlaying = false
         isPodcastGenerating = false
         podcastErrorMessage = nil
+        podcastCurrentTime = 0
+        podcastDuration = 0
+        stopPlaybackTimer()
         persist(lesson, key: Keys.currentLesson)
         defaults.set(Date(), forKey: Keys.currentLessonDate)
 
@@ -346,14 +355,23 @@ final class WordCastStore: ObservableObject {
         podcastErrorMessage = nil
 
         if isPodcastPlaying || podcastPlayer.isPlaying {
-            podcastPlayer.stop()
+            podcastPlayer.pause()
             isPodcastPlaying = false
-            isPodcastGenerating = false
+            stopPlaybackTimer()
             return
         }
 
         guard let lesson = currentLesson else { return }
         guard !isPodcastGenerating else { return }
+
+        // If already loaded, just resume
+        if podcastDuration > 0 {
+            podcastPlayer.resume()
+            isPodcastPlaying = true
+            startPlaybackTimer()
+            return
+        }
+
         isPodcastGenerating = true
 
         do {
@@ -368,16 +386,35 @@ final class WordCastStore: ObservableObject {
             try podcastPlayer.play(url: audioURL) { [weak self] in
                 Task { @MainActor in
                     self?.isPodcastPlaying = false
+                    self?.stopPlaybackTimer()
+                    self?.podcastCurrentTime = 0
                 }
             }
 
             isPodcastPlaying = true
+            podcastDuration = podcastPlayer.duration
+            startPlaybackTimer()
         } catch {
             podcastErrorMessage = error.localizedDescription
             isPodcastPlaying = false
         }
 
         isPodcastGenerating = false
+    }
+
+    private func startPlaybackTimer() {
+        stopPlaybackTimer()
+        playbackTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            Task { @MainActor in
+                self.podcastCurrentTime = self.podcastPlayer.currentTime
+            }
+        }
+    }
+
+    private func stopPlaybackTimer() {
+        playbackTimer?.invalidate()
+        playbackTimer = nil
     }
 
     var isCurrentLessonFavorite: Bool {
@@ -451,6 +488,32 @@ final class WordCastStore: ObservableObject {
     private static func decode<T: Decodable>(_ type: T.Type, key: String, defaults: UserDefaults) -> T? {
         guard let data = defaults.data(forKey: key) else { return nil }
         return try? JSONDecoder().decode(type, from: data)
+    }
+    
+    // Debug function to clear all cached data
+    func clearAllData() {
+        defaults.removeObject(forKey: Keys.currentLesson)
+        defaults.removeObject(forKey: Keys.currentLessonDate)
+        defaults.removeObject(forKey: Keys.library)
+        defaults.removeObject(forKey: Keys.reviewItems)
+        defaults.removeObject(forKey: Keys.favoriteWordIDs)
+        defaults.removeObject(forKey: Keys.learnedWordIDs)
+        
+        currentLesson = nil
+        library = []
+        reviewItems = []
+        favoriteWordIDs = []
+        learnedWordIDs = []
+        cachedPodcastURLByWordID = [:]
+        isPodcastPlaying = false
+        isPodcastGenerating = false
+        podcastErrorMessage = nil
+        podcastCurrentTime = 0
+        podcastDuration = 0
+        stopPlaybackTimer()
+        
+        // Regenerate today's lesson with the new transcript format
+        loadTodayIfNeeded(forceRefresh: true)
     }
 }
 

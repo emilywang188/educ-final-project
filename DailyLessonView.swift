@@ -6,6 +6,12 @@ struct TodayView: View {
     @State private var selectedChoice: Int?
     @State private var quizCompleted = false
     @State private var feedback: Bool?
+    
+    private func formatTime(_ seconds: TimeInterval) -> String {
+        let mins = Int(seconds) / 60
+        let secs = Int(seconds) % 60
+        return String(format: "%d:%02d", mins, secs)
+    }
 
     var body: some View {
         ZStack {
@@ -223,28 +229,52 @@ struct TodayView: View {
                     .disabled(store.isPodcastGenerating)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("The Beauty of Transience")
-                            .font(.system(size: 16, weight: .bold))
-                        Text("Episode 142 • 4:20 mins")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(Theme.onSurfaceVariant)
+                        if let word = store.currentLesson {
+                            Text(word.word.capitalized)
+                                .font(.system(size: 16, weight: .bold))
+                            if store.podcastDuration > 0 {
+                                Text("Audio Lesson • \(formatTime(store.podcastDuration))")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(Theme.onSurfaceVariant)
+                            } else {
+                                Text("Audio Lesson")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(Theme.onSurfaceVariant)
+                            }
+                        } else {
+                            Text("Loading...")
+                                .font(.system(size: 16, weight: .bold))
+                            Text("Preparing lesson")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(Theme.onSurfaceVariant)
+                        }
                     }
                     Spacer()
                 }
 
                 VStack(spacing: 6) {
-                    Capsule()
-                        .fill(Theme.surfaceContainerHighest)
-                        .frame(height: 6)
-                        .overlay(alignment: .leading) {
-                            Capsule()
-                                .fill(Theme.primary)
-                                .frame(width: 120, height: 6)
-                        }
+                    GeometryReader { geometry in
+                        Capsule()
+                            .fill(Theme.surfaceContainerHighest)
+                            .frame(height: 6)
+                            .overlay(alignment: .leading) {
+                                let progress = store.podcastDuration > 0 ? store.podcastCurrentTime / store.podcastDuration : 0
+                                let width = geometry.size.width * CGFloat(progress)
+                                Capsule()
+                                    .fill(Theme.primary)
+                                    .frame(width: max(0, width), height: 6)
+                            }
+                    }
+                    .frame(height: 6)
+                    
                     HStack {
-                        Text("1:24")
+                        Text(formatTime(store.podcastCurrentTime))
                         Spacer()
-                        Text("-3:06")
+                        if store.podcastDuration > 0 {
+                            Text("-\(formatTime(store.podcastDuration - store.podcastCurrentTime))")
+                        } else {
+                            Text("--:--")
+                        }
                     }
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(Theme.outline)

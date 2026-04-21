@@ -323,8 +323,9 @@ final class MockAIService {
     private init() {}
 
     func generateDailyWord(preferences: UserPreferences, existingWords: [VocabularyWord], date: Date) -> VocabularyWord {
-        let seedInterests = UserPreferences.seedInterestKeys(from: preferences.interests)
-        let candidates = seeds.filter { seedInterests.contains($0.interest) }
+        // Filter seeds by matching user's actual selected interests
+        let selectedInterests = Set(preferences.interests)
+        let candidates = seeds.filter { selectedInterests.contains($0.interest) }
         let pool = candidates.isEmpty ? seeds : candidates
 
         let dayIndex = Calendar.current.ordinality(of: .day, in: .year, for: date) ?? 1
@@ -335,8 +336,9 @@ final class MockAIService {
     }
 
     func randomWord(preferences: UserPreferences, existingWords: [VocabularyWord], excluding word: VocabularyWord?) -> VocabularyWord {
-        let seedInterests = UserPreferences.seedInterestKeys(from: preferences.interests)
-        let candidates = seeds.filter { seedInterests.contains($0.interest) }
+        // Filter seeds by matching user's actual selected interests
+        let selectedInterests = Set(preferences.interests)
+        let candidates = seeds.filter { selectedInterests.contains($0.interest) }
         var pool = candidates.isEmpty ? seeds : candidates
         if let word {
             pool.removeAll { $0.word == word.word }
@@ -346,8 +348,9 @@ final class MockAIService {
     }
 
     func quizQuestion(for word: VocabularyWord, preferences: UserPreferences) -> QuizQuestion {
-        let seedInterests = UserPreferences.seedInterestKeys(from: preferences.interests)
-        let candidates = seeds.filter { seedInterests.contains($0.interest) }
+        // Filter seeds by matching user's actual selected interests
+        let selectedInterests = Set(preferences.interests)
+        let candidates = seeds.filter { selectedInterests.contains($0.interest) }
         let pool = candidates.isEmpty ? seeds : candidates
         
         // Get the correct sentence from the target word's examples

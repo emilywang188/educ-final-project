@@ -5,7 +5,6 @@ struct TodayView: View {
     @State private var quizQuestion: QuizQuestion?
     @State private var selectedChoice: Int?
     @State private var quizCompleted = false
-    @State private var feedback: Bool?
     
     private func formatTime(_ seconds: TimeInterval) -> String {
         let mins = Int(seconds) / 60
@@ -142,24 +141,6 @@ struct TodayView: View {
                         )
                     }
                     .padding(20)
-
-                    HStack {
-                        Text("Interesting?")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(Theme.onSurfaceVariant)
-                        Spacer()
-                        HStack(spacing: 8) {
-                            feedbackButton(title: "Yes", systemImage: "hand.thumbsup.fill", isSelected: feedback == true) {
-                                feedback = true
-                            }
-                            feedbackButton(title: "No", systemImage: "hand.thumbsdown.fill", isSelected: feedback == false) {
-                                feedback = false
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
-                    .background(Theme.surfaceContainerHighest.opacity(0.35))
                 }
                 .background(Theme.surfaceContainerLowest)
                 .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
@@ -383,23 +364,6 @@ struct TodayView: View {
         }
     }
 
-    private func feedbackButton(title: String, systemImage: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(title == "Yes" ? Theme.secondary : Theme.error)
-                Text(title)
-                    .font(.system(size: 12, weight: .semibold))
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(isSelected ? Theme.surfaceContainerLow : Theme.surfaceContainerLowest)
-            .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
-    }
-
     private func selectionBackground(for index: Int, correctIndex: Int) -> Color {
         guard let selectedChoice else {
             return Theme.surfaceContainerLowest
@@ -424,7 +388,6 @@ struct TodayView: View {
         quizQuestion = MockAIService.shared.quizQuestion(for: word, preferences: store.preferences)
         selectedChoice = nil
         quizCompleted = false
-        feedback = nil
     }
 }
 
